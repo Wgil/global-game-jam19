@@ -2,6 +2,7 @@ import 'phaser';
 import {COORDS, GAME_WIDTH, GAME_HEIGHT} from './utils/constants'
 import {player, initPlayer} from './player'
 import {shapes, initShapes} from './shapes'
+import {image0, iter, updateBackground} from './updateBackground'
 
 // https://photonstorm.github.io/phaser3-docs/global.html#GameConfig
 var config = {
@@ -30,9 +31,15 @@ var config = {
 let game = new Phaser.Game(config);
 let cursors;
 
+// Background
+let image0;
+let iter = 0; // interval
+
+
 function preload ()
 {
     this.load.image('square', 'assets/square.png');
+    this.load.image('image0', 'assets/starfield.png');
 }
 
 
@@ -50,9 +57,28 @@ function create ()
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
     
+    // Create image Backgroud
+    image0 = this.add.tileSprite(400, 300, 800, 600, 'image0');
+
+}
+
+function updateBackground () {
+    function updateBackgroundPosition (iter) {
+        return iter + 1;
+    }
+    image0.tilePositionY = updateBackgroundPosition(iter);
+
+    if(iter == -100 ){
+        iter = 0;
+    }
+    iter -= 1;
 }
 
 function update() {
+
+    // update the position background
+    updateBackground()
+
     if (cursors.left.isDown) {
         this.physics.moveTo(player, COORDS.X.left, GAME_HEIGHT, 500)
     }

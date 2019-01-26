@@ -40,3 +40,24 @@ export function initShapes() {
 
   return shapes
 }
+
+const TIMES = 3000;
+
+export function respawnShapes() {
+  // generar de 1 a 3 formas aleatorias en lugares aleatorios.
+  // cuadrar que el tiempo entre una colision y otra sea divisible por 130s
+
+  // setTimeout(()=> {
+    // shapes.create(...spawnCoords[0], randomShape);
+    // shapes.create(...spawnCoords[1], randomShape2);
+    // shapes.create(...spawnCoords[2], randomShape3);
+  // }, TIMES + 3000);
+
+
+  // setInterval( () => {
+        shapes.create(...spawnCoords[0], randomShape);
+    shapes.create(...spawnCoords[1], randomShape2);
+    shapes.create(...spawnCoords[2], randomShape3);
+  // }, 100);
+
+}

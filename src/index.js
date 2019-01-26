@@ -30,7 +30,6 @@ var config = {
 let game = new Phaser.Game(config);
 let cursors;
 let background;
-let backgroundTilePositionY = 0;
 
 
 function preload ()
@@ -68,11 +67,7 @@ function update() {
 }
 
 function updateBackground () {
-    background.tilePositionY = backgroundTilePositionY;
-
-    if( backgroundTilePositionY === -100) return backgroundTilePositionY = 0;
-    
-    backgroundTilePositionY -= 1;
+    background.tilePositionY -= 1;
 }
 
 function collideShape(player, shape) {

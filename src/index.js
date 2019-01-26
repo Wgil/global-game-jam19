@@ -60,9 +60,13 @@ function create () {
 }
 
 function update() {
-
     // update the position background
-    // updateBackground()
+    updateBackground()
+
+    if (!player.isAlive()) {
+        // Show Game over
+        return
+    }
 
     addPlayerMovement.apply(this);
 }
@@ -72,6 +76,17 @@ function updateBackground () {
 }
 
 function collideShape(player, shape) {
+    if (!player.isHitten()) {
+        player.hitten = true;
+        shapes.generatePersonalities(shape);
+    }
+
+    if (shape.evil) {
+        player.hitPlayer(player)
+    } else {
+        player.addPoints(player)
+    }
+
     // Disable physics after collision
     shape.disableBody(true, true)
 }

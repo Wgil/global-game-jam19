@@ -34,9 +34,26 @@ export function initShapes() {
     // accelerationY: 1000
   })
   
+  // Spawn initial shapes
   shapes.create(...spawnCoords[0], randomShape);
   shapes.create(...spawnCoords[1], randomShape2);
   shapes.create(...spawnCoords[2], randomShape3);
 
+
+  // Attach generate random personality shape
+  shapes.generatePersonalities = generatePersonalities;
+
   return shapes
+}
+
+function generatePersonalities(shape) {
+  // TODO: Add hitten shape as good personality
+  const personalities = {
+    [NAMES.triangle]: Math.random() >= 0.5,
+    [NAMES.square]: Math.random() >= 0.5,
+    [NAMES.circle]: Math.random() >= 0.5
+  }
+  shapes.children.iterate(function (shape) {
+    shape.evil = personalities[shape.texture.key]
+  });
 }

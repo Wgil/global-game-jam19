@@ -12,8 +12,14 @@ var config = {
     // Physics configuration.
     physics: {
         default: 'arcade',
-        arcade: { debug: true }
+        arcade: {
+            debug: true,
+            gravity: {
+                y: 100
+            }
+        },
     },
+    // Scenes fns
     scene: {
         preload: preload,
         create: create,
@@ -21,8 +27,8 @@ var config = {
     }
 };
 
-var game = new Phaser.Game(config);
-var cursors;
+let game = new Phaser.Game(config);
+let cursors;
 
 function preload ()
 {
@@ -48,10 +54,10 @@ function create ()
 
 function update() {
     if (cursors.left.isDown) {
-        player.body.setVelocityX(-160);
+        this.physics.moveTo(player, COORDS.X.left, GAME_HEIGHT, 500)
     }
     else if (cursors.right.isDown) {
-        player.body.setVelocityX(160);
+        this.physics.moveTo(player, COORDS.X.right, GAME_HEIGHT, 500)
     }
 }
 

@@ -2,7 +2,6 @@ import 'phaser';
 import {COORDS, GAME_WIDTH, GAME_HEIGHT} from './utils/constants'
 import {player, initPlayer} from './player'
 import {shapes, initShapes} from './shapes'
-import {image0, iter, updateBackground} from './updateBackground'
 
 // https://photonstorm.github.io/phaser3-docs/global.html#GameConfig
 var config = {
@@ -16,7 +15,7 @@ var config = {
         arcade: {
             debug: true,
             gravity: {
-                y: 100
+                y: 300
             }
         },
     },
@@ -30,21 +29,22 @@ var config = {
 
 let game = new Phaser.Game(config);
 let cursors;
-
-// Background
-let image0;
-let iter = 0; // interval
+let background;
+let backgroundTilePositionY = 0;
 
 
 function preload ()
 {
+    this.load.image('background', 'assets/starfield.png');
     this.load.image('square', 'assets/square.png');
-    this.load.image('image0', 'assets/starfield.png');
 }
 
 
 function create ()
 {   
+    // Create image Backgroud
+    background = this.add.tileSprite(COORDS.X.center, COORDS.Y.center, GAME_WIDTH, GAME_HEIGHT, 'background');
+
     // Init player options
     initPlayer.apply(this);
     
@@ -56,22 +56,7 @@ function create ()
 
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
-    
-    // Create image Backgroud
-    image0 = this.add.tileSprite(400, 300, 800, 600, 'image0');
 
-}
-
-function updateBackground () {
-    function updateBackgroundPosition (iter) {
-        return iter + 1;
-    }
-    image0.tilePositionY = updateBackgroundPosition(iter);
-
-    if(iter == -100 ){
-        iter = 0;
-    }
-    iter -= 1;
 }
 
 function update() {
@@ -79,12 +64,15 @@ function update() {
     // update the position background
     updateBackground()
 
-    if (cursors.left.isDown) {
-        this.physics.moveTo(player, COORDS.X.left, GAME_HEIGHT, 500)
-    }
-    else if (cursors.right.isDown) {
-        this.physics.moveTo(player, COORDS.X.right, GAME_HEIGHT, 500)
-    }
+    addPlayerMovement.apply(this);
+}
+
+function updateBackground () {
+    background.tilePositionY = backgroundTilePositionY;
+
+    if( backgroundTilePositionY === -100) return backgroundTilePositionY = 0;
+    
+    backgroundTilePositionY -= 1;
 }
 
 function collideShape(player, shape) {
@@ -92,3 +80,11 @@ function collideShape(player, shape) {
     shape.disableBody(true, true)
 }
 
+function addPlayerMovement() {
+    if (cursors.left.isDown) {
+        this.physics.moveTo(player, COORDS.X.left, GAME_HEIGHT, 500)
+    }
+    else if (cursors.right.isDown) {
+        this.physics.moveTo(player, COORDS.X.right, GAME_HEIGHT, 500)
+    }
+}

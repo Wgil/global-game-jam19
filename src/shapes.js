@@ -2,6 +2,25 @@ import {COORDS, GAME_WIDTH, GAME_HEIGHT} from './utils/constants'
 
 export let shapes = null;
 
+export const NAMES = {
+  triangle: 'triangle',
+  square: 'square',
+  circle: 'circle'
+}
+
+const spawnCoords = [
+  COORDS.XY.topLeft,
+  COORDS.XY.topCenter, 
+  COORDS.XY.topRight
+];
+
+const INIT_TIMEOUT = 1846;
+
+const randomCoord = spawnCoords[Math.floor(Math.random()*spawnCoords.length)];
+const availableShapes = [NAMES.triangle, NAMES.circle, NAMES.square];
+const randomShape = availableShapes[Math.floor(Math.random() * availableShapes.length)];
+const [randomShape2, randomShape3] = availableShapes.filter(s => randomShape !== s)
+
 export function initShapes() {
   /** All Game Objects created by this Group will automatically be given dynamic
      * Arcade Physics bodies. 
@@ -14,9 +33,10 @@ export function initShapes() {
      */
     // accelerationY: 1000
   })
-
-  // Add a square to the group
-  shapes.create(...COORDS.XY.center, 'square').setScale(.5);
+  
+  shapes.create(...spawnCoords[0], randomShape);
+  shapes.create(...spawnCoords[1], randomShape2);
+  shapes.create(...spawnCoords[2], randomShape3);
 
   return shapes
 }

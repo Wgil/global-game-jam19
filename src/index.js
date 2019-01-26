@@ -1,7 +1,7 @@
 import 'phaser';
 import {COORDS, GAME_WIDTH, GAME_HEIGHT} from './utils/constants'
 import {player, initPlayer} from './player'
-import {shapes, initShapes} from './shapes'
+import {shapes, initShapes, NAMES as SHAPE_NAMES} from './shapes'
 
 // https://photonstorm.github.io/phaser3-docs/global.html#GameConfig
 var config = {
@@ -35,12 +35,13 @@ let background;
 function preload ()
 {
     this.load.image('background', 'assets/starfield.png');
-    this.load.image('square', 'assets/square.png');
+    this.load.image(SHAPE_NAMES.square, 'assets/square.png');
+    this.load.image(SHAPE_NAMES.circle, 'assets/circle.png');
+    this.load.image(SHAPE_NAMES.triangle, 'assets/triangle.png');
 }
 
 
-function create ()
-{   
+function create () {   
     // Create image Backgroud
     background = this.add.tileSprite(COORDS.X.center, COORDS.Y.center, GAME_WIDTH, GAME_HEIGHT, 'background');
 
@@ -61,7 +62,7 @@ function create ()
 function update() {
 
     // update the position background
-    updateBackground()
+    // updateBackground()
 
     addPlayerMovement.apply(this);
 }

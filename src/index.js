@@ -109,6 +109,7 @@ function create () {
     pointSound = this.sound.add('point');
     theme_start = this.sound.add('theme_start');
     theme_start.play();
+    this.cameras.main.fadeIn(7000);
 
     // Init player options
     initPlayer.apply(this);
@@ -141,7 +142,7 @@ function update() {
 
     addPlayerMovement.apply(this);
 
-    text.setText('Event.progress: ' );
+    text.setText(`Engaged: ${player.points}`);
 
 }
 

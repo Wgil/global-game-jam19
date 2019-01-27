@@ -15,7 +15,7 @@ var config = {
         arcade: {
             debug: false,
             gravity: {
-                y: 130
+                y: 350
             }
         },
     },
@@ -108,6 +108,7 @@ function create () {
     hitSound = this.sound.add('hit');
     pointSound = this.sound.add('point');
     theme_start = this.sound.add('theme_start');
+    theme_start.play();
 
     // Init player options
     initPlayer.apply(this);

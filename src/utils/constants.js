@@ -30,4 +30,5 @@ export const PLAYER_SPEED = 500;
 
 export const PARTICLES_QUANTITY = [0, 7, 12];
 
+const MUSIC_BPM = 130;
 export const RESPAWN_DELAY = 2000;

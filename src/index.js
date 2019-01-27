@@ -39,6 +39,7 @@ let theme_start;
 let hitSound;
 let pointSound;
 let gameOver;
+let hintText;
 
 
 function preload ()
@@ -130,6 +131,10 @@ function create () {
 
     // Create game over text
     gameOver = this.add.text(170, COORDS.Y.center);
+
+    // Add hint text
+    hintText = this.add.text(200, COORDS.Y.center);
+    hintText.setText("Find your way home!");
 }
 
 function update() {
@@ -166,6 +171,7 @@ function collideShape(player, shape) {
 
         theme.play('loop');
         pointSound.play();
+        hintText.visible = false;
 
         // Respawn shapes loop
         this.time.addEvent({ delay: RESPAWN_DELAY, callback: respawnShapes, callbackScope: this, loop: true });

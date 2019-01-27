@@ -1,7 +1,7 @@
 import 'phaser';
 import {COORDS, GAME_WIDTH, GAME_HEIGHT} from './utils/constants'
 import {player, initPlayer} from './player'
-import {shapes, initShapes, NAMES as SHAPE_NAMES} from './shapes'
+import {shapes, initShapes, NAMES as SHAPE_NAMES, respawnShapes} from './shapes'
 
 // https://photonstorm.github.io/phaser3-docs/global.html#GameConfig
 var config = {
@@ -15,7 +15,7 @@ var config = {
         arcade: {
             debug: true,
             gravity: {
-                y: 300
+                y: 130
             }
         },
     },
@@ -30,6 +30,11 @@ var config = {
 let game = new Phaser.Game(config);
 let cursors;
 let background;
+
+// new
+let text;
+let timedEvent;
+
 
 
 function preload ()
@@ -57,6 +62,10 @@ function create () {
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
 
+    // Create text
+    text = this.add.text(32, 32);
+
+
 }
 
 function update() {
@@ -69,6 +78,25 @@ function update() {
     }
 
     addPlayerMovement.apply(this);
+
+    text.setText('Event.progress: ' );
+
+    // respawnShapes()
+    timedEvent = this.time.addEvent({ delay: 4000, callback: onEvent, callbackScope: this, repeat: 3 });
+
+    this.input.on('pointerdown', function () {
+
+        if (timedEvent.paused)
+        {
+            timedEvent.paused = false;
+        }
+        else
+        {
+            timedEvent.paused = true;
+        }
+
+    });
+
 }
 
 function updateBackground () {
@@ -89,6 +117,11 @@ function collideShape(player, shape) {
 
     // Disable physics after collision
     shape.disableBody(true, true)
+  setTimeout(()=> {
+    respawnShapes()
+  }, 3000);
+
+
 }
 
 function addPlayerMovement() {
@@ -98,4 +131,12 @@ function addPlayerMovement() {
     else if (cursors.right.isDown) {
         this.physics.moveTo(player, COORDS.X.right, GAME_HEIGHT, 500)
     }
+}
+
+
+function onEvent ()
+{
+        // background.rotation += 0.004;
+        // console.log(background.rotation)
+    // respawnShapes()
 }

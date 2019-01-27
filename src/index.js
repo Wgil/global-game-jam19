@@ -91,11 +91,14 @@ class SceneA extends Phaser.Scene {
         this.cameras.main.fadeIn(7000);
 
         // Instructions 
-        var instructions = this.add.text(90, COORDS.Y.center);
-        instructions.setText('Click on the screen to turn on the lights.')
+        var instructions = this.add.text(0, COORDS.Y.center);
+        instructions.setText(`
+            Click on the screen and choose the orb you will bond with.
+            Follow them throughout the journey.
+            `)
 
         var credits = this.add.text(190, GAME_HEIGHT - 200);
-        credits.setText('Arrow keys to play.');
+        // credits.setText('Arrow keys to play.');
 
 
     }

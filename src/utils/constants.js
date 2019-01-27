@@ -1,4 +1,4 @@
-export const GAME_WIDTH = 576;
+export const GAME_WIDTH = 700;
 export const GAME_HEIGHT = 700;
 export const FIG_SIZE = 130;
 export const FIG_FRAME_RATE = 5.5;
@@ -28,7 +28,7 @@ export const COORDS = {
 
 export const PLAYER_SPEED = 500;
 
-export const PARTICLES_QUANTITY = [0, 7, 12];
+export const PARTICLES_QUANTITY = [0, 2, 12];
 
 const MUSIC_BPM = 130;
 export const RESPAWN_DELAY = 2000;

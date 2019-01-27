@@ -49,11 +49,11 @@ export default class Game extends Phaser.Scene {
         text = this.add.text(32, 32);
 
         // Create game over text
-        gameOver = this.add.text(170, COORDS.Y.center);
-
+        gameOver = this.add.text(240, COORDS.Y.center);
+        
         // Add hint text
         hintText = this.add.text(200, COORDS.Y.center);
-        hintText.setText("Find your way home!");
+        // hintText.setText("Find your way home!");
     }
 
     update() {
@@ -63,7 +63,7 @@ export default class Game extends Phaser.Scene {
         if (!player.isAlive()) {
             // Disable physics after collision
             player.disableBody(true, false)
-
+            
             gameOver.setText("The end of the journey.");
 
             // Show Game over

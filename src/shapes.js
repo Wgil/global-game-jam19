@@ -56,8 +56,6 @@ export function initShapes() {
 }
 
 export function respawnShapes() {
-  // generar de 1 a 3 formas aleatorias en lugares aleatorios.
-  // cuadrar que el tiempo entre una colision y otra sea divisible por 130s
   let respawnQuantity = Math.floor(Math.random() * 4)
   
   while (respawnQuantity > 0) {

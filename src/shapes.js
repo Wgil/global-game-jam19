@@ -10,13 +10,15 @@ const spawnCoords = [
 
 const INIT_TIMEOUT = 1846;
 
-const TIMES = 3000;
-
-const randomCoord = spawnCoords[Math.floor(Math.random()*spawnCoords.length)];
 const availableShapes = ['star_white_01', 'star_red_01', 'star_orange_01'];
 const randomShape = availableShapes[Math.floor(Math.random() * availableShapes.length)];
 const [randomShape2, randomShape3] = availableShapes.filter(s => randomShape !== s)
 
+let evils = {
+  'star_white_01': true,
+  'star_red_01': true,
+  'star_orange_01': true
+}
 export function initShapes() {
 
 
@@ -53,10 +55,32 @@ export function initShapes() {
   return shapes
 }
 
+export function respawnShapes() {
+  // generar de 1 a 3 formas aleatorias en lugares aleatorios.
+  // cuadrar que el tiempo entre una colision y otra sea divisible por 130s
+  let respawnQuantity = Math.floor(Math.random() * 4)
+  
+  while (respawnQuantity > 0) {
+
+  const coords = getRandomCoord()
+  const name = getRandomShape()
+  const shape = shapes.create(...coords, name);
+  tweakShape(shape, `${name}_animation`);
+  
+    respawnQuantity = respawnQuantity - 1
+  }
+
+}
+
 function tweakShape(shape, anim) {
   // Resize
   shape.displayHeight = FIG_SIZE;
   shape.displayWidth = FIG_SIZE;
+
+  // textures keys shape are 1 2 3 in the sprite animations so we make it to be 1.
+  let key = shape.texture.key.slice(0, -1);
+  key = `${key}1`;
+  shape.evil = evils[key]
 
   // Add animation
   shape.play(anim);
@@ -98,33 +122,39 @@ function loadAnimations() {
 }
 
 function generatePersonalities(shape) {
-  // TODO: Add hitten shape as good personality
-  const personalities = {
+  setEvils();
+
+  // if theres no a bad guy, try again.
+  if (!Object.keys(evils).filter(e => evils[e]).length) {
+    return generatePersonalities(shape)
+  }
+
+  // textures keys shape are 1 2 3 in the sprite animations so we make it to be 1.
+  let key = shape.texture.key.slice(0, -1);
+  key = `${key}1`;
+  evils[key] = false;
+
+  console.log("EVILS", evils)
+  
+  shapes.children.iterate(function (shape) {
+    shape.evil = evils[shape.texture.key]
+  });
+}
+
+function getRandomCoord() {
+  return spawnCoords[Math.floor(Math.random()*spawnCoords.length)];
+}
+
+function getRandomShape() {
+  return availableShapes[Math.floor(Math.random() * availableShapes.length)];
+}
+
+function setEvils() {
+  let rand = {
     'star_white_01': Math.random() >= 0.5,
     'star_red_01': Math.random() >= 0.5,
     'star_orange_01': Math.random() >= 0.5
   }
-  shapes.children.iterate(function (shape) {
-    shape.evil = personalities[shape.texture.key]
-  });
-}
 
-
-export function respawnShapes() {
-  // generar de 1 a 3 formas aleatorias en lugares aleatorios.
-  // cuadrar que el tiempo entre una colision y otra sea divisible por 130s
-
-  // setTimeout(()=> {
-    // shapes.create(...spawnCoords[0], randomShape);
-    // shapes.create(...spawnCoords[1], randomShape2);
-    // shapes.create(...spawnCoords[2], randomShape3);
-  // }, TIMES + 3000);
-
-
-  // setInterval( () => {
-        shapes.create(...spawnCoords[0], randomShape);
-    shapes.create(...spawnCoords[1], randomShape2);
-    shapes.create(...spawnCoords[2], randomShape3);
-  // }, 100);
-
+  evils = rand;
 }

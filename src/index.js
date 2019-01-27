@@ -1,5 +1,5 @@
 import 'phaser';
-import {COORDS, GAME_WIDTH, GAME_HEIGHT, PLAYER_SPEED, PARTICLES_QUANTITY} from './utils/constants'
+import {COORDS, GAME_WIDTH, GAME_HEIGHT, PLAYER_SPEED, PARTICLES_QUANTITY, RESPAWN_DELAY} from './utils/constants'
 import {player, initPlayer} from './player'
 import {shapes, initShapes, NAMES as SHAPE_NAMES, respawnShapes} from './shapes'
 
@@ -83,6 +83,7 @@ function create () {
     // Init player options
     initPlayer.apply(this);
     
+    
     // Init shape options
     initShapes.apply(this);
 
@@ -119,6 +120,9 @@ function update() {
     updateBackground()
 
     if (!player.isAlive()) {
+        // Disable physics after collision
+        player.disableBody(true, false)
+
         // Show Game over
         return
     }
@@ -126,22 +130,6 @@ function update() {
     addPlayerMovement.apply(this);
 
     text.setText('Event.progress: ' );
-
-    // respawnShapes()
-    // timedEvent = this.time.addEvent({ delay: 4000, callback: onEvent, callbackScope: this, repeat: 3 });
-
-    // this.input.on('pointerdown', function () {
-
-    //     if (timedEvent.paused)
-    //     {
-    //         timedEvent.paused = false;
-    //     }
-    //     else
-    //     {
-    //         timedEvent.paused = true;
-    //     }
-
-    // });
 
 }
 
@@ -155,29 +143,36 @@ function collideShape(player, shape) {
 
         player.hitten = true;
         shapes.generatePersonalities(shape);
-
         initParticles.call(this)
 
+        // Respawn shapes loop
+        this.time.addEvent({ delay: RESPAWN_DELAY, callback: respawnShapes, callbackScope: this, loop: true });
+
     } else {
-        var quantity = PARTICLES_QUANTITY[2];
-        switch (player.hits) {
-            case 0:
-                quantity = PARTICLES_QUANTITY[2];
-            case 1:
-                quantity = PARTICLES_QUANTITY[1];
-            case 2:
-                quantity = PARTICLES_QUANTITY[0];
-                break;
-            default:
-                quantity = PARTICLES_QUANTITY[0];
-        } 
-
-
         if (shape.evil) {
             player.hitPlayer(player)
         } else {
             player.addPoints(player)
         }
+
+        var quantity = PARTICLES_QUANTITY[2];
+        switch (player.hits) {
+            case 0:
+                quantity = PARTICLES_QUANTITY[2];
+                break;
+            case 1:
+                quantity = PARTICLES_QUANTITY[1];
+                break;
+            case 2:
+                quantity = PARTICLES_QUANTITY[0];
+                break;
+            default:
+                quantity = PARTICLES_QUANTITY[0];
+        }
+        
+        console.log("HITS:", player.hits)
+        console.log("POINTS", player.points)
+
         setParticles(quantity)
     }
 
@@ -216,12 +211,4 @@ function initParticles() {
 
 function setParticles(quantitiy) {
     particles.setQuantity(quantitiy);
-}
-
-
-function onEvent ()
-{
-        // background.rotation += 0.004;
-        // console.log(background.rotation)
-    // respawnShapes()
 }

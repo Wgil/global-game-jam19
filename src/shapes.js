@@ -124,14 +124,17 @@ function loadAnimations() {
 function generatePersonalities(shape) {
   setEvils();
 
-  // if theres no a bad guy, try again.
-  if (!Object.keys(evils).filter(e => evils[e]).length) {
-    return generatePersonalities(shape)
-  }
-
   // textures keys shape are 1 2 3 in the sprite animations so we make it to be 1.
   let key = shape.texture.key.slice(0, -1);
   key = `${key}1`;
+
+  // if theres no a bad guy, try again.
+  if (!Object.keys(evils).filter(e => evils[e]).length) {
+    const onlyEvil = Object.keys(evils).filter(e => e !== key)[0]
+    evils[onlyEvil] = true
+  }
+
+  
   evils[key] = false;
 
   console.log("EVILS", evils)

@@ -28,6 +28,6 @@ export const COORDS = {
 
 export const PLAYER_SPEED = 500;
 
-export const PARTICLES_QUANTITY = [3, 7, 12];
+export const PARTICLES_QUANTITY = [0, 7, 12];
 
 export const RESPAWN_DELAY = 2000;

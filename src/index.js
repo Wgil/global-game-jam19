@@ -38,6 +38,7 @@ let theme;
 let theme_start;
 let hitSound;
 let pointSound;
+let gameOver;
 
 
 function preload ()
@@ -126,6 +127,9 @@ function create () {
 
     // Create text
     text = this.add.text(32, 32);
+
+    // Create game over text
+    gameOver = this.add.text(170, COORDS.Y.center);
 }
 
 function update() {
@@ -135,6 +139,8 @@ function update() {
     if (!player.isAlive()) {
         // Disable physics after collision
         player.disableBody(true, false)
+
+        gameOver.setText("The end of the journey.");
 
         // Show Game over
         return

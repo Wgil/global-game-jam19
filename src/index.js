@@ -34,13 +34,15 @@ let particles;
 // new
 let text;
 let timedEvent;
-
+let theme;
+let theme_start;
+let hitSound;
+let pointSound;
 
 
 function preload ()
 {
     // background
-    // this.load.image('background', 'assets/background/starfield.png');
     this.load.image('background', 'assets/background/space_bk.png');
 
     // enemies
@@ -65,10 +67,22 @@ function preload ()
     this.load.image('player_02', 'assets/shapes/stars/star_blue02.png');
     this.load.image('player_03', 'assets/shapes/stars/star_blue03.png');
 
+    // MUSIC
+    this.load.audio('theme', [
+        'assets/music/Level_Theme_Carrera_de_luz.wav'
+    ]);
+
+    this.load.audio('theme_start', [
+        'assets/music/start_1846.wav'
+    ]);
     
     // FX SOUNDS
     this.load.audio('hit', [
-        'assets/sounds/magnet_start.wav'
+        'assets/sounds/hit.wav'
+    ]);
+
+    this.load.audio('point', [
+        'assets/sounds/point.wav'
     ]);
 
 }
@@ -79,6 +93,21 @@ function create () {
     // Create image Backgroud
     background =
         this.add.tileSprite(COORDS.X.center, COORDS.Y.center, GAME_WIDTH, GAME_HEIGHT, 'background');
+
+    // ADD MUSIC
+    theme = this.sound.add('theme');
+    var loopMarker = {
+        name: 'loop',
+        start: 0,
+        config: {
+            loop: true
+        }
+    };
+    theme.addMarker(loopMarker);
+
+    hitSound = this.sound.add('hit');
+    pointSound = this.sound.add('point');
+    theme_start = this.sound.add('theme_start');
 
     // Init player options
     initPlayer.apply(this);
@@ -95,24 +124,6 @@ function create () {
 
     // Create text
     text = this.add.text(32, 32);
-
-    // ADD MUSIC
-    // var loopMarker = {
-    //     name: 'loop',
-    //     start: 0,
-    //     duration: 7.68,
-    //     config: {
-    //         loop: true
-    //     }
-    // };
-    // bass.addMarker(loopMarker);
-
-    // Delay option can only be passed in config
-    // bass.play('loop', {
-    //    delay: 0
-    // });
-
-
 }
 
 function update() {
@@ -145,14 +156,19 @@ function collideShape(player, shape) {
         shapes.generatePersonalities(shape);
         initParticles.call(this)
 
+        theme.play('loop');
+        pointSound.play();
+
         // Respawn shapes loop
         this.time.addEvent({ delay: RESPAWN_DELAY, callback: respawnShapes, callbackScope: this, loop: true });
 
     } else {
         if (shape.evil) {
             player.hitPlayer(player)
+            hitSound.play();
         } else {
-            player.addPoints(player)
+            player.addPoints(player);
+            pointSound.play();
         }
 
         var quantity = PARTICLES_QUANTITY[2];
@@ -175,11 +191,6 @@ function collideShape(player, shape) {
 
         setParticles(quantity)
     }
-
-
-    // PLAY FX
-    var music = this.sound.add('hit');
-    music.play();
 
     // Disable physics after collision
     shape.disableBody(true, true)

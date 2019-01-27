@@ -1,5 +1,10 @@
 export const GAME_WIDTH = 576;
 export const GAME_HEIGHT = 700;
+export const FIG_SIZE = 130;
+export const FIG_FRAME_RATE = 5.5;
+
+const offsetX = 66;
+const offsetY = 110;
 
 export const COORDS = {
     X: {
@@ -11,12 +16,16 @@ export const COORDS = {
         center: GAME_HEIGHT / 2
     },
     XY: {
-        topLeft: [0, -50],
-        topCenter: [GAME_WIDTH / 2, -50],
-        topRight: [GAME_WIDTH, -50],
+        topLeft: [offsetX, -offsetY],
+        topCenter: [GAME_WIDTH / 2, -offsetY],
+        topRight: [GAME_WIDTH - offsetX, -offsetY],
         center: [GAME_WIDTH / 2, GAME_HEIGHT / 2],
-        bottomLeft: [0, GAME_HEIGHT],
-        bottomMiddle: [GAME_WIDTH / 2, GAME_HEIGHT],
-        bottomRight: [GAME_WIDTH, GAME_HEIGHT]
+        bottomLeft: [offsetX, GAME_HEIGHT - offsetY],
+        bottomMiddle: [GAME_WIDTH / 2, GAME_HEIGHT - offsetY],
+        bottomRight: [GAME_WIDTH - offsetX, GAME_HEIGHT - offsetY]
     }
 }
+
+export const PLAYER_SPEED = 500;
+
+export const PARTICLES_QUANTITY = [0, 5, 10];

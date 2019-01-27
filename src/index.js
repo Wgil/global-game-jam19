@@ -1,5 +1,5 @@
 import 'phaser';
-import {COORDS, GAME_WIDTH, GAME_HEIGHT} from './utils/constants'
+import {COORDS, GAME_WIDTH, GAME_HEIGHT, PLAYER_SPEED, PARTICLES_QUANTITY} from './utils/constants'
 import {player, initPlayer} from './player'
 import {shapes, initShapes, NAMES as SHAPE_NAMES, respawnShapes} from './shapes'
 
@@ -13,7 +13,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
             gravity: {
                 y: 130
             }
@@ -30,7 +30,7 @@ var config = {
 let game = new Phaser.Game(config);
 let cursors;
 let background;
-
+let particles;
 // new
 let text;
 let timedEvent;
@@ -39,16 +39,46 @@ let timedEvent;
 
 function preload ()
 {
-    this.load.image('background', 'assets/starfield.png');
-    this.load.image(SHAPE_NAMES.square, 'assets/square.png');
-    this.load.image(SHAPE_NAMES.circle, 'assets/circle.png');
-    this.load.image(SHAPE_NAMES.triangle, 'assets/triangle.png');
+    // background
+    // this.load.image('background', 'assets/background/starfield.png');
+    this.load.image('background', 'assets/background/space_bk.png');
+
+    // enemies
+    this.load.image('star_orange_01', 'assets/shapes/stars/star_orange01.png');
+    this.load.image('star_orange_02', 'assets/shapes/stars/star_orange02.png');
+    this.load.image('star_orange_03', 'assets/shapes/stars/star_orange03.png');
+
+    this.load.image('star_white_01', 'assets/shapes/stars/star_white01.png');
+    this.load.image('star_white_02', 'assets/shapes/stars/star_white02.png');
+    this.load.image('star_white_03', 'assets/shapes/stars/star_white03.png');
+
+    this.load.image('star_red_01', 'assets/shapes/stars/star_red01.png');
+    this.load.image('star_red_02', 'assets/shapes/stars/star_red02.png');
+    this.load.image('star_red_03', 'assets/shapes/stars/star_red03.png');
+
+    
+    // FX particles
+    this.load.image('spark', 'assets/fx/blue.png');
+
+    // player
+    this.load.image('player_01', 'assets/shapes/stars/star_blue01.png');
+    this.load.image('player_02', 'assets/shapes/stars/star_blue02.png');
+    this.load.image('player_03', 'assets/shapes/stars/star_blue03.png');
+
+    
+    // FX SOUNDS
+    this.load.audio('hit', [
+        'assets/sounds/magnet_start.wav'
+    ]);
+
 }
+
 
 
 function create () {   
     // Create image Backgroud
-    background = this.add.tileSprite(COORDS.X.center, COORDS.Y.center, GAME_WIDTH, GAME_HEIGHT, 'background');
+    background =
+        this.add.tileSprite(COORDS.X.center, COORDS.Y.center, GAME_WIDTH, GAME_HEIGHT, 'background');
 
     // Init player options
     initPlayer.apply(this);
@@ -64,6 +94,22 @@ function create () {
 
     // Create text
     text = this.add.text(32, 32);
+
+    // ADD MUSIC
+    // var loopMarker = {
+    //     name: 'loop',
+    //     start: 0,
+    //     duration: 7.68,
+    //     config: {
+    //         loop: true
+    //     }
+    // };
+    // bass.addMarker(loopMarker);
+
+    // Delay option can only be passed in config
+    // bass.play('loop', {
+    //    delay: 0
+    // });
 
 
 }
@@ -82,20 +128,20 @@ function update() {
     text.setText('Event.progress: ' );
 
     // respawnShapes()
-    timedEvent = this.time.addEvent({ delay: 4000, callback: onEvent, callbackScope: this, repeat: 3 });
+    // timedEvent = this.time.addEvent({ delay: 4000, callback: onEvent, callbackScope: this, repeat: 3 });
 
-    this.input.on('pointerdown', function () {
+    // this.input.on('pointerdown', function () {
 
-        if (timedEvent.paused)
-        {
-            timedEvent.paused = false;
-        }
-        else
-        {
-            timedEvent.paused = true;
-        }
+    //     if (timedEvent.paused)
+    //     {
+    //         timedEvent.paused = false;
+    //     }
+    //     else
+    //     {
+    //         timedEvent.paused = true;
+    //     }
 
-    });
+    // });
 
 }
 
@@ -105,32 +151,71 @@ function updateBackground () {
 
 function collideShape(player, shape) {
     if (!player.isHitten()) {
+
+
         player.hitten = true;
         shapes.generatePersonalities(shape);
+
+        initParticles.call(this)
+
+    } else {
+        var quantity = PARTICLES_QUANTITY[2];
+        switch (player.hits) {
+            case 0:
+                quantity = PARTICLES_QUANTITY[2];
+            case 1:
+                quantity = PARTICLES_QUANTITY[1];
+            case 2:
+                quantity = PARTICLES_QUANTITY[0];
+                break;
+            default:
+                quantity = PARTICLES_QUANTITY[0];
+        } 
+
+
+        if (shape.evil) {
+            player.hitPlayer(player)
+        } else {
+            player.addPoints(player)
+        }
+        setParticles(quantity)
     }
 
-    if (shape.evil) {
-        player.hitPlayer(player)
-    } else {
-        player.addPoints(player)
-    }
+
+    // PLAY FX
+    var music = this.sound.add('hit');
+    music.play();
 
     // Disable physics after collision
     shape.disableBody(true, true)
-  setTimeout(()=> {
-    respawnShapes()
-  }, 3000);
-
-
 }
 
 function addPlayerMovement() {
+    // add ease in movement or something
     if (cursors.left.isDown) {
-        this.physics.moveTo(player, COORDS.X.left, GAME_HEIGHT, 500)
+        this.physics.moveTo(player, COORDS.X.left, player.y, PLAYER_SPEED)
+        
     }
     else if (cursors.right.isDown) {
-        this.physics.moveTo(player, COORDS.X.right, GAME_HEIGHT, 500)
+        this.physics.moveTo(player, COORDS.X.right, player.y, PLAYER_SPEED)
     }
+
+    particles && particles.setPosition(player.x, player.y);
+}
+
+function initParticles() {
+    particles = this.add.particles('spark').createEmitter({
+        x: player.x,
+        y: player.y,
+        blendMode: 'SCREEN',
+        scale: { start: 0.2, end: 0 },
+        speed: { min: -100, max: 100 },
+        quantity: PARTICLES_QUANTITY[2]
+    });
+}
+
+function setParticles(quantitiy) {
+    particles.setQuantity(quantitiy);
 }
 
 

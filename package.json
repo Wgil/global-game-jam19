@@ -4,8 +4,9 @@
   "description": "A Phaser 3 Project Template",
   "main": "src/index.js",
   "scripts": {
+    "start": "npm run build && webpack-dev-server --port=8000",
     "build": "webpack",
-    "start": "npm run build && webpack-dev-server --port=8000"
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
@@ -19,9 +20,10 @@
   },
   "homepage": "https://github.com/photonstorm/phaser3-project-template#readme",
   "devDependencies": {
-    "webpack-dev-server": "^2.11.0",
+    "gh-pages": "^2.0.1",
+    "raw-loader": "^0.5.1",
     "webpack": "^3.4.1",
-    "raw-loader": "^0.5.1"
+    "webpack-dev-server": "^2.11.0"
   },
   "dependencies": {
     "phaser": "^3.15.1"

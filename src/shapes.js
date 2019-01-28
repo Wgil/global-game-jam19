@@ -8,8 +8,6 @@ const spawnCoords = [
   COORDS.XY.topRight
 ];
 
-const INIT_TIMEOUT = 1846;
-
 const availableShapes = ['star_white_01', 'star_red_01', 'star_orange_01'];
 const randomShape = availableShapes[Math.floor(Math.random() * availableShapes.length)];
 const [randomShape2, randomShape3] = availableShapes.filter(s => randomShape !== s)
@@ -56,15 +54,29 @@ export function initShapes() {
 }
 
 export function respawnShapes() {
+  // clear old shapes to save resources
+  shapes.clear(true, true);
+
   let respawnQuantity = Math.floor(Math.random() * 4)
+
+  let usedCoords = [];
   
   while (respawnQuantity > 0) {
 
-  const coords = getRandomCoord()
-  const name = getRandomShape()
-  const shape = shapes.create(...coords, name);
-  tweakShape(shape, `${name}_animation`);
-  
+    const coords = getRandomCoord()
+
+    // Avoid overlapping shapes in the same coord
+    if (usedCoords.filter(c => c === coords).length) {
+      respawnQuantity = respawnQuantity - 1
+      continue;
+    }
+
+    usedCoords.push(coords);
+    
+    const name = getRandomShape()
+    const shape = shapes.create(...coords, name);
+    tweakShape(shape, `${name}_animation`);
+    
     respawnQuantity = respawnQuantity - 1
   }
 
@@ -135,7 +147,7 @@ function generatePersonalities(shape) {
   
   evils[key] = false;
 
-  console.log("EVILS", evils)
+  // console.log("EVILS", evils)
   
   shapes.children.iterate(function (shape) {
     shape.evil = evils[shape.texture.key]

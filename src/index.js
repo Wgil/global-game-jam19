@@ -63,6 +63,16 @@ class SceneA extends Phaser.Scene {
         this.load.audio('point', [
             'assets/sounds/point.wav'
         ]);
+
+        // Loading screen
+        var loadingText = this.make.text({x: COORDS.X.center, y: COORDS.Y.center});
+        this.load.on('progress', function () {
+            loadingText.setText('Loading...');
+        });
+
+        this.load.on('complete', () => {
+            loadingText.destroy();
+        });
     }
 
     create ()
@@ -81,26 +91,22 @@ class SceneA extends Phaser.Scene {
 
         this.input.manager.enabled = true;
 
-        this.input.once('pointerdown', function () {
-            console.log("Clicked")
-            this.scene.start('Game');
-            theme.stop();
+        this.cameras.main.fadeIn(5000, 0, 0, 0, (_, progress) => {
+            if (progress !== 1) return;
 
-        }, this);
-
-        this.cameras.main.fadeIn(7000);
+            this.input.keyboard.on('keydown', () => {
+                this.scene.start('Game');
+                theme.stop();
+    
+            }, this);
+        });
 
         // Instructions 
         var instructions = this.add.text(0, COORDS.Y.center);
         instructions.setText(`
-            Click on the screen and choose the orb you will bond with.
-            Follow them throughout the journey.
+            Choose the orb you will bond with and follow them
+            throughout the journey.
             `)
-
-        var credits = this.add.text(190, GAME_HEIGHT - 200);
-        // credits.setText('Arrow keys to play.');
-
-
     }
 
 }

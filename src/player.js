@@ -35,6 +35,7 @@ export function initPlayer() {
   player.hitPlayer = hitPlayer;
   player.isAlive = isAlive;
   player.isHitten = isHitten;
+  player.heal = heal;
 
   player.setCollideWorldBounds(true); // don't go out of the map
 }
@@ -53,4 +54,10 @@ function addPoints() {
 
 function hitPlayer() {
   player.hits+= 1
+}
+
+function heal() {
+  if (player.hits === 0) return
+
+  player.hits -= 1;
 }

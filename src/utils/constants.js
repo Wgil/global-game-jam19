@@ -28,7 +28,6 @@ export const COORDS = {
 
 export const PLAYER_SPEED = 500;
 
-export const PARTICLES_QUANTITY = [0, 2, 12];
+export const PARTICLES_QUANTITY = [0, 1, 10];
 
-const MUSIC_BPM = 130;
 export const RESPAWN_DELAY = 2000;
